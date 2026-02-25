@@ -32,6 +32,17 @@ const CarRentalSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Please add a region']
     }
+}, {
+    toJSON: {virtuals: true},
+    toObject: {virtuals: true}
+});
+
+//Reverse populate with virtuals
+CarRentalSchema.virtual('rents',{
+    ref: 'Rent',
+    localField: ' id',
+    foreignField:'carRental',
+    justone: false
 });
 
 module.exports = mongoose.model('CarRental', CarRentalSchema);
