@@ -20,6 +20,10 @@ const RentSchema=new mongoose.Schema ({
         ref: 'CarRental',
         required: true
     },
+    car: {
+        type: String,
+        required: true
+    },
     createAt: {
         type: Date,
         default: Date.now
