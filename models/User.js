@@ -17,6 +17,14 @@ const UserSchema = new mongoose.Schema({
             'Please add a valid email'
         ]
     },
+    firstname: {
+        type: String,
+        required: [true, 'Please add a firstname'],
+    },
+    lastname: {
+        type: String,
+        required: [true, 'Please add a lastname'],
+    },
     role: {
         type:String,
         enum: ['user','admin'],

@@ -15,7 +15,7 @@ const RentSchema=new mongoose.Schema ({
         ref: 'User',
         required: true
     },
-    hospital: {
+    carRental: {
         type: mongoose.Schema.ObjectId,
         ref: 'CarRental',
         required: true
