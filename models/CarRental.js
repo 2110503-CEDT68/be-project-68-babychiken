@@ -40,9 +40,9 @@ const CarRentalSchema = new mongoose.Schema({
 //Reverse populate with virtuals
 CarRentalSchema.virtual('rents',{
     ref: 'Rent',
-    localField: ' id',
+    localField: '_id',
     foreignField:'carRental',
-    justone: false
+    justOne: false
 });
 
 module.exports = mongoose.model('CarRental', CarRentalSchema);
