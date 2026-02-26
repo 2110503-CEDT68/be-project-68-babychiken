@@ -2,12 +2,28 @@ const express = require('express');
 const dotenv = require('dotenv');
 const connectDB = require('./config/db');
 const cookieParser = require('cookie-parser')
-
+const helmet = require('helmet');
+const {xss} = require('express-xss-sanitizer');
+const rateLimit = require('express-rate-limit');
+const hpp = require('hpp');
+const cors = require('cors');
 dotenv.config({path : './config/config.env'});
 
+connectDB();
+
+const limiter = rateLimit({
+    windowMs : 10*60*1000, //10 mins,
+    max : 1000000
+});
+
 const app = express();
+app.use(helmet());
 app.use(express.json());
 app.use(cookieParser());
+app.use(xss());
+app.use(limiter);
+app.use(hpp());
+app.use(cors());
 const carRentals = require('./routes/carRentals');
 const auth = require('./routes/auth');
 const rents = require('./routes/rents');
