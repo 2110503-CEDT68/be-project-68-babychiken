@@ -6,14 +6,17 @@ const User = require('../models/User');
 // @access  Public
 exports.register = async (req, res, next) => {
   try {
-    const { name, email, password } = req.body;
+    const { username, email,tel,firstname, lastname, password, role  } = req.body;
 
     // Prevent user from setting role manually
     const user = await User.create({
-      name,
+      username,
+      firstname,
+      lastname,
       email,
       password,
-      role: 'user'
+      role,
+      tel
     });
 
     sendTokenResponse(user, 201, res);
@@ -22,7 +25,7 @@ exports.register = async (req, res, next) => {
     console.error(err);
     res.status(400).json({
       success: false,
-      message: 'Cannot register user'
+      message: ('Cannot register user',err)
     });
   }
 };
@@ -34,19 +37,24 @@ exports.register = async (req, res, next) => {
 // @access  Public
 exports.login = async (req, res, next) => {
   try {
-    const { email, password } = req.body;
+    const { identifier, password } = req.body;
 
     // Validate email & password
-    if (!email || !password) {
+    if (!identifier || !password) {
       return res.status(400).json({
         success: false,
-        message: 'Please provide an email and password'
+        message: 'Please provide email or username and password'
       });
     }
 
     // Check for user (+password because select: false)
-    const user = await User.findOne({ email }).select('+password');
-
+      const user = await User.findOne({
+        $or: [
+          { email: identifier },
+          { username: identifier }
+        ]
+      }).select('+password');
+      
     if (!user) {
       return res.status(401).json({
         success: false,
@@ -105,6 +113,47 @@ exports.getMe = async (req, res, next) => {
     data: user
   });
 };
+
+exports.resetPassword = async (req,res,next) => {
+  try{
+    const {currentPassword,newPassword,rePassword} = req.body;
+    const user = await User.findById(req.user.id).select('+password');;
+
+    if(!user){
+      return res.status(404).json({
+        success:false,
+        msg:"User cannot be found"
+      })
+    }
+
+    const isMatch = await user.matchPassword(currentPassword);
+    if(!isMatch){
+      return res.status(401).json({
+        success:false,
+        msg:"Current password is incorrect"
+      });
+    }
+    if(newPassword !== rePassword){
+      return res.status(400).json({
+        success:false,
+        msg: "New password comfirmation mismatch"
+      })
+    }
+    user.password = newPassword;
+    await user.save();
+
+    return res.status(200).json({
+      success:true,
+      msg: "Password changed successfully."
+    })
+  }
+  catch(e){
+    res.status(500).json({
+      success:false,
+      msg:(`Cannot change password, ${e}`)
+    })
+  }
+}
 
 
 

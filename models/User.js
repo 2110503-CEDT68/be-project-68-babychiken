@@ -20,6 +20,7 @@ const UserSchema = new mongoose.Schema({
     tel: {
         type: String,
         required: [true, 'Please add a phone number'],
+        unique: true
     },
     firstname: {
         type: String,
@@ -38,7 +39,7 @@ const UserSchema = new mongoose.Schema({
         type:String,
         required:[true,'Please add a password'],
         minlength: 6,
-        select: false
+        select:false
     },
     resetPasswordToken: String,
     resetPasswordExpire: Date,

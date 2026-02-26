@@ -4,7 +4,7 @@ const router = express.Router();
 const {protect,authorize} = require('../middleware/auth');
 const rentsRouter = require('./rents');
 
-router.route('/:carRentalId/rents',rentsRouter);
+router.use('/:carRentalId/rents',rentsRouter);
 router.route('/')
     .get(getCarRentals)
     .post(protect,authorize('admin'),createCarRental);
