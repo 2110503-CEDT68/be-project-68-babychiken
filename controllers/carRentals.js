@@ -117,8 +117,6 @@ exports.getCarRental = async (req, res, next) => {
   }
 };
 
-
-
 // @desc    Create car rental
 // @route   POST /api/v1/carRentals
 // @access  Private (Admin)
